@@ -4,11 +4,18 @@ const cpu = osu.cpu;
 const mem = osu.mem;
 const os = osu.os;
 
+let cpuOverload = 5;
+
 // Run every 2 seconds
 setInterval(() => {
   // Get CPU usage
   cpu.usage().then((info) => {
     document.getElementById('cpu-usage').innerText = `${info}%`;
+    document.getElementById('cpu-progress').style.width = `${info}%`;
+  
+    document.getElementById('cpu-progress').style.background = 
+      info > cpuOverload ? 'red' : '#30c88b';
+      
   });
 
   // Get CPU free
