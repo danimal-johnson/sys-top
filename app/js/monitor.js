@@ -6,6 +6,11 @@ const os = osu.os;
 
 let cpuOverload = 5;
 
+notifyUser({
+  title: 'CPU overload',
+  message: `CPU is over ${cpuOverload}`,
+});
+
 // Run every 2 seconds
 setInterval(() => {
   // Get CPU usage
@@ -48,3 +53,7 @@ function formatTime(seconds) {
   return `${days}d ${hours}h ${minutes}m ${sec}s`;
 }
 
+// Send notification
+function notifyUser(options) {
+  new Notification(options.title, options);
+}
