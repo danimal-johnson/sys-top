@@ -25,7 +25,7 @@ setInterval(() => {
         icon: path.join(__dirname, 'img', 'icon.png'),
       });
 
-      localStorage.setItem('lastNotify' + new Date());
+      localStorage.setItem('lastNotify', new Date());
     };
   });
 
