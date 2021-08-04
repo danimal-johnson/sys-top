@@ -1,5 +1,7 @@
-const { app, BrowserWindow, Menu } = require('electron')
-const log = require('electron-log')
+const { app, BrowserWindow, Menu } = require('electron');
+const log = require('electron-log');
+const Store = require('./Store');
+
 
 // Set env
 process.env.NODE_ENV = 'development'
@@ -7,7 +9,18 @@ process.env.NODE_ENV = 'development'
 const isDev = process.env.NODE_ENV !== 'production' ? true : false
 const isMac = process.platform === 'darwin' ? true : false
 
-let mainWindow
+let mainWindow;
+
+// Initialize the store
+const store = new Store({
+  configName: 'user-settings',
+  defaults: {
+    settings: {
+      cpuOverload: 80,
+      alertFrequency: 5,
+    }
+  }
+});
 
 function createMainWindow() {
   mainWindow = new BrowserWindow({
@@ -22,18 +35,24 @@ function createMainWindow() {
   })
 
   if (isDev) {
-    mainWindow.webContents.openDevTools()
+    mainWindow.webContents.openDevTools();
   }
 
-  mainWindow.loadFile('./app/index.html')
+  mainWindow.loadFile('./app/index.html');
 }
 
 app.on('ready', () => {
-  createMainWindow()
+  createMainWindow();
 
-  const mainMenu = Menu.buildFromTemplate(menu)
-  Menu.setApplicationMenu(mainMenu)
-})
+  mainWindow.webContents.on('dom-ready', () => {
+    mainWindow.webContents.send('settings:get', store.get('settings'));
+  });
+
+  const mainMenu = Menu.buildFromTemplate(menu);
+  Menu.setApplicationMenu(mainMenu);
+
+  mainWindow.on('ready', () => (mainWindow = null));
+});
 
 const menu = [
   ...(isMac ? [{ role: 'appMenu' }] : []),

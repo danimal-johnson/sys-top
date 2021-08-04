@@ -5,7 +5,7 @@ const mem = osu.mem;
 const os = osu.os;
 
 const updateInterval = 2000; // Update every 2 seconds
-let cpuOverload = 5; // TODO: Low number for testing only.
+let cpuOverload = 1; // TODO: Low number for testing only.
 let alertFrequency = 1; // In minutes
 
 setInterval(() => {
@@ -67,14 +67,22 @@ function notifyUser(options) {
 // Check how much time has passed since last notification
 function runNotify(frequency) {
   if (localStorage.getItem('lastNotify') === null) {
-    console.log('Storing new date', +new Date());
+    console.log('Initializing date', +new Date());
     localStorage.setItem('lastNotify', +new Date());
     return true;
   }
   const notifyTime = new Date(parseInt(localStorage.getItem('lastNotify')));
   const now = new Date();
   const diff = Math.abs(now - notifyTime);
-  const minutesPassed = Math.ceil(diff / (1000 * 60));
+  const minutesPassed = Math.floor(diff / (1000 * 60));
 
-  return minutesPassed > frequency ? true : false;
+  console.log (`Difference: ${diff}ms, Minutes passed: ${minutesPassed}`);
+
+  if (minutesPassed > frequency) {
+    console.log('Notify');
+    localStorage.setItem('lastNotify', +new Date());
+    return true;
+  }
+
+  return false;
 }
