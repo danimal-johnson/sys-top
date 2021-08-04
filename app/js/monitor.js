@@ -25,7 +25,7 @@ setInterval(() => {
         icon: path.join(__dirname, 'img', 'icon.png'),
       });
 
-      localStorage.setItem('lastNotify', new Date());
+      localStorage.setItem('lastNotify', +new Date());
     };
   });
 
@@ -67,7 +67,8 @@ function notifyUser(options) {
 // Check how much time has passed since last notification
 function runNotify(frequency) {
   if (localStorage.getItem('lastNotify') === null) {
-    localStorage.setItem('lastNotify', new Date());
+    console.log('Storing new date', +new Date());
+    localStorage.setItem('lastNotify', +new Date());
     return true;
   }
   const notifyTime = new Date(parseInt(localStorage.getItem('lastNotify')));
