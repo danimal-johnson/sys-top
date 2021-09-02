@@ -5,7 +5,7 @@ const mem = osu.mem;
 const os = osu.os;
 
 const updateInterval = 2000; // Update every 2 seconds
-let cpuOverload = 1; // TODO: Low number for testing only.
+let cpuOverload = 60; // TODO: Low number for testing only.
 let alertFrequency = 1; // In minutes
 
 setInterval(() => {
