@@ -39,7 +39,7 @@
         <form id="settings-form">
           <div class="form-control">
             <label for="cpu-overload">CPU Overload Warning %</label>
-            <input type="number" id="cpu-overload" min="0" max="100" value="50" />
+            <input type="number" id="cpu-overload" min="0" max="100"/>
           </div>
           <div class="form-control">
             <label for="alert-frequency">Alert frequency in minutes</label>
@@ -65,12 +65,38 @@
     <script src="js/tabs.js"></script>
     <script src="js/monitor.js"></script>
     <script>
-      const { ipcRenderer } = require('electron');
+      // const { ipcRenderer } = require('electron');
+      const settingsForm = document.getElementById('settings-form');
 
+      // Get settings
       ipcRenderer.on('settings:get', (event, settings) => {
+        console.log('Receiving', settings);
         document.getElementById('cpu-overload').value = settings.cpuOverload;
         document.getElementById('alert-frequency').value = settings.alertFrequency;
       });
+
+      // Save settings
+      settingsForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const settings = {
+          cpuOverload: document.getElementById('cpu-overload').value,
+          alertFrequency: document.getElementById('alert-frequency').value
+        };
+        console.log(`cpuOverload (${cpuOverload})`);
+        ipcRenderer.send('settings:set', {
+          cpuOverload,
+          alertFrequency,
+        });
+
+        showAlert('Settings saved!');
+      });
+
+      function showAlert(message) {
+        const alert = document.getElementById('alert');
+        alert.classList.remove('hide');
+        alert.classList.add('alert');
+        alert.innerHTML = message;
+      }
     </script>
   </body>
 </html>
